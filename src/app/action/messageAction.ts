@@ -53,7 +53,7 @@ export const getMessages = (dispatch: Dispatch) => async (messages: Array<IPaylo
   }
 }
 
-export const getAllTopics = () => async(dispatch: Dispatch) => {
+export const getAllTopics = () => async (dispatch: Dispatch) => {
   try {
     const response = await api.getTopics();
     dispatch(setTopics(response));

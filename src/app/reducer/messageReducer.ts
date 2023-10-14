@@ -7,7 +7,7 @@ const initialState = {
   topics: []
 };
 
-const messageReducer = (state: unknown = initialState, action: unknown) => {
+const messageReducer = (state: { loading: boolean, messages: Array<string>, error: string, topics: Array<string> } = initialState, action: unknown) => {
   const { type, payload } = action;
   switch(type) {
     case messageTypes.PENDING:
