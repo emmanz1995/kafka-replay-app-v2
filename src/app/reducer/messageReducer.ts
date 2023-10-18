@@ -4,7 +4,8 @@ const initialState = {
   loading: false,
   messages: [],
   error: '',
-  topics: []
+  topics: [],
+  keys: []
 };
 
 const messageReducer = (state: unknown = initialState, action: unknown) => {
@@ -37,6 +38,20 @@ const messageReducer = (state: unknown = initialState, action: unknown) => {
         topics: [],
         error: payload,
         loading: false,
+      }
+    case messageTypes.GET_KEYS:
+      return {
+        ...state,
+        loading: false,
+        keys: payload,
+        error: '',
+      }
+    case messageTypes.GET_KEYS_ERROR:
+      return {
+        ...state,
+        loading: false,
+        keys: [],
+        error: payload,
       }
     default: return state;
   }

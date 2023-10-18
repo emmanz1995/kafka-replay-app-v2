@@ -38,6 +38,17 @@ const setTopics = (payload: unknown) => ({
   payload
 });
 
+//TODO: this is supposed to be Array<string> but had to keep it as unknown for now while I debug
+const setKeys = (keys: unknown) => ({
+  type: messageTypes.GET_KEYS,
+  payload: keys
+})
+
+const setKeysError = (err: object) => ({
+  type: messageTypes.GET_KEYS_ERROR,
+  payload: err
+})
+
 export const getMessages = (dispatch: Dispatch) => async (messages: Array<IPayload>) => {
   dispatch(setLoading());
   try {
@@ -61,5 +72,15 @@ export const getAllTopics = () => async(dispatch: Dispatch) => {
     console.log(err);
     dispatch(setTopicError(err));
     throw err;
+  }
+}
+
+export const getKeys = (topic: string) => async (dispatch: Dispatch) => {
+  try {
+    const response = await api.getKeys(topic);
+    dispatch(setKeys(response));
+  } catch(err) {
+    dispatch(setKeysError(err));
+    console.log(err);
   }
 }

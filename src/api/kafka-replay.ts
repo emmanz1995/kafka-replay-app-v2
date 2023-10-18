@@ -25,7 +25,7 @@ export const getTopics = () =>
   kafkaReplayConnector('http://localhost:8090/internal/v2/messages/topics', {});
 
 export const getKeys = (TOPIC: string) =>
-  kafkaReplayConnector(`/internal/messages/topics/${TOPIC}/keys`, {});
+  kafkaReplayConnector(`http://localhost:8090/internal/v2/messages/topics/${TOPIC}/keys`, {});
 
 export const deleteAllMessages = (payload: IPayload) =>
   kafkaReplayConnector('/internal/messages/search', { method: 'DELETE', payload});
