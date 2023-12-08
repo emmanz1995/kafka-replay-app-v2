@@ -1,27 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GlobalStyles } from './styled';
-import { Button } from './components/atoms/buttons/Button';
+// import { Button } from './components/atoms/buttons/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash';
-import { getAllTopics, getKeys } from './app/action/messageAction';
+import { getAllTopics, getKeys, getMessages } from './app/action/messageAction';
+import Select from './components/atoms/select/Select';
 
 function App() {
-  const { topics, keys, error }  = useSelector(state => state.message);
+  const { topics, keys, messages, error } = useSelector(state => state.message);
+  const [chosenTopic, setChosenTopic] = useState<unknown>(null);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if(topics)
-      dispatch(getAllTopics())
 
-    dispatch(getKeys(topics))
-  }, [dispatch])
-  console.log(topics)
-  const handleGetKeys = () => {}
+  useEffect(() => {
+    if(chosenTopic) handleSearchMessages();
+    dispatch(getAllTopics());
+    dispatch(getKeys(topics));
+
+  }, [dispatch, chosenTopic]);
+
+  const handleSearchMessages = () => {
+    const payload: { topic: string, keys: string[] } = {
+      topic: 'some-topic_ms-kafka-failure_RETRY',
+      keys
+    }
+    dispatch(getMessages(payload));
+  }
+
   return (
     <>
       <GlobalStyles />
+      <span>{error}</span>
       <h1>Hello World!</h1>
-      {map(topics, topic => <Button topic={topic} key={topic} />)}
-      {keys.join(', ')}
+      <Select setChosenTopic={setChosenTopic} topics={topics} />
+      {chosenTopic && (
+        <>
+          <h1>messages</h1>
+          {map(messages, message => map(message, msg => map(msg, (m, index) => (
+            <div key={index}>
+              <h4>{m?.topic}</h4>
+              <p>{m?.payload}</p>
+              <p>{m?.exceptionStacktrace}</p>
+            </div>
+          ))))}
+        </>
+      )}
     </>
   )
 }

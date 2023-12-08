@@ -17,7 +17,7 @@ const removeLoading = () => ({
   payload: false
 })
 
-const setMessages = (payload: Array<IPayload>) => ({
+const setMessages = (payload: { topic: string; keys: string[] }) => ({
   type: messageTypes.GET_MESSAGES,
   payload
 });
@@ -49,17 +49,18 @@ const setKeysError = (err: object) => ({
   payload: err
 })
 
-export const getMessages = (dispatch: Dispatch) => async (messages: Array<IPayload>) => {
+export const getMessages = (messages: { topic: string; keys: string[] }) => async (dispatch: Dispatch) => {
   dispatch(setLoading());
   try {
-    const response = api.searchMessages(messages);
+    const response = await api.searchMessages(messages);
     dispatch(removeLoading());
-    dispatch(setMessages(messages));
+    dispatch(setMessages(response));
+    console.log('...response:', response);
     return response;
-  } catch(err) {
+  } catch(err: unknown) {
     console.log(err);
     dispatch(removeLoading());
-    dispatch(setMessagesError(err));
+    dispatch(setMessagesError(err.message));
     throw err;
   }
 }
@@ -70,7 +71,7 @@ export const getAllTopics = () => async(dispatch: Dispatch) => {
     dispatch(setTopics(response));
   } catch(err: unknown) {
     console.log(err);
-    dispatch(setTopicError(err));
+    dispatch(setTopicError(err.message));
     throw err;
   }
 }

@@ -1,6 +1,14 @@
 import { messageTypes } from '../types';
 
-const initialState = {
+interface MessageState {
+  loading: boolean;
+  messages: any[]; // Replace 'any' with the actual type of your messages
+  error: string;
+  topics: string[]; // Replace 'any' with the actual type of your topics
+  keys: string[]; // Replace 'any' with the actual type of your keys
+}
+
+const initialState: MessageState = {
   loading: false,
   messages: [],
   error: '',
@@ -8,7 +16,7 @@ const initialState = {
   keys: []
 };
 
-const messageReducer = (state: unknown = initialState, action: unknown) => {
+const messageReducer = (state: { messages: { payload: string; topic: string; id: string; key: string }[] } = initialState, action: { payload: { messages: { payload: string; topic: string; id: string; key: string }[] }; type: string }) => {
   const { type, payload } = action;
   switch(type) {
     case messageTypes.PENDING:
@@ -23,6 +31,13 @@ const messageReducer = (state: unknown = initialState, action: unknown) => {
         ...state,
         messages: payload,
         error: '',
+        loading: false
+      }
+    case messageTypes.GET_MESSAGES_ERROR:
+      return {
+        ...state,
+        messages: [],
+        error: payload,
         loading: false
       }
     case messageTypes.GET_TOPICS:

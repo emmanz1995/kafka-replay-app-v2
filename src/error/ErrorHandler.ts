@@ -3,7 +3,7 @@ const ErrorHandler = (error: object, ...args: unknown) => {
   const UNEXPECTED_ERROR_MESSAGE = 'Unable to make any requests at the time being. Please try again';
   switch(error.errorCode) {
     case 'MS_KAFA_REPLAY-000':
-      return `Internal Error has occured due to: ${args}`;
+      return `Internal Error has occurred due to: ${args}`;
     case 'MS_KAFA_REPLAY-001':
       return `${args}`;
     case 'MS_KAFA_REPLAY-002':
