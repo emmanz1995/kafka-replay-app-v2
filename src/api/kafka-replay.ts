@@ -1,5 +1,5 @@
 // import { kafkaReplayConnector } from '../kafka-replay-connector';
-import kafkaReplayConnector from '../kafka-replay-connector/kafka-replay-connector';
+// import kafkaReplayConnector from '../kafka-replay-connector/kafka-replay-connector';
 import axios from 'axios';
 
 interface IPayload {
@@ -8,11 +8,7 @@ interface IPayload {
 }
 
 export const searchMessages = async (payload: { topic: string; keys: string[] }) => {
-  // console.log('...payload:', payload)
-  // const post = await kafkaReplayConnector('http://localhost:8090/internal/v2/messages/search', { method: 'POST', payload });
-  // console.log('...post:', post)
-  // return post
-  let data;
+  let data: object;
 
   try {
     ({ data } = await axios({
@@ -21,32 +17,148 @@ export const searchMessages = async (payload: { topic: string; keys: string[] })
       headers: {
         'content-type': 'application/json'
       },
-      data: payload
+      data: JSON.stringify(payload)
     }))
   } catch(err) {
-    console.log(err)
-    return err;
+    console.log(err);
+    throw err;
   }
+
   return data;
 }
 
-export const replayMessages = (payload: IPayload) =>
-  kafkaReplayConnector('http://localhost:8090/internal/v2/messages/retry', { method: 'POST', payload });
+export const replayMessages = async (payload: IPayload) => {
+  let data: object;
 
-export const replayOneMessage = (id: string) =>
-  kafkaReplayConnector(`/internal/messages/retry/${id}`, { method: 'POST' });
+  try {
+    ({ data } = await axios({
+      url: 'http://localhost:8090/internal/v2/messages/retry',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      data: JSON.stringify(payload)
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
 
-export const getMessage = (id: string) =>
-  kafkaReplayConnector(`/internal/messages/${id}`, {});
+  return data;
+}
 
-export const deleteOneMessage = (id: string) =>
-  kafkaReplayConnector(`/internal/messages/${id}`, { method: 'DELETE' });
+export const replayOneMessage = async (id: string) => {
+  let data: object;
 
-export const getTopics = () =>
-  kafkaReplayConnector('http://localhost:8090/internal/v2/messages/topics', {});
+  try {
+    ({ data } = await axios({
+      url: `http://localhost:8090/internal/v2/messages/retry/${id}`,
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      }
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
 
-export const getKeys = (topic: string = 'some-topic_ms-kafka-failure_RETRY') =>
-  kafkaReplayConnector(`http://localhost:8090/internal/v2/messages/topics/some-topic_ms-kafka-failure_RETRY/keys`, {});
+  return data;
+}
 
-export const deleteAllMessages = (payload: IPayload) =>
-  kafkaReplayConnector('/internal/messages/search', { method: 'DELETE', payload });
+export const getMessage = async (id: string) => {
+  let data: object;
+
+  try {
+    ({ data } = await axios({
+      url: `http://localhost:8090/internal/v2/messages/${id}`,
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
+
+  return data;
+}
+
+export const deleteOneMessage = async (id: string) => {
+  let data: object;
+
+  try {
+    ({ data } = await axios({
+      url: `http://localhost:8090/internal/v2/messages/${id}`,
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json'
+      }
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
+
+  return data;
+}
+
+export const getTopics = async () => {
+  let data: object;
+
+  try {
+    ({ data } = await axios({
+      url: 'http://localhost:8090/internal/v2/messages/topics',
+      method: 'GET',
+      // headers: {
+      //   'content-type': 'application/json'
+      // }
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
+
+  return data;
+}
+
+export const getKeys = async (topic) => {
+  let data: object;
+  // maintaining-order-event_ms-kafka-failure_RETRY
+  // some-topic_ms-kafka-failure_RETRY
+
+  const url = new URL(`http://localhost:8090/internal/v2/messages/topics/${topic}/keys`)
+
+  try {
+    ({ data } = await axios({
+      url: url.toString(),
+      method: 'GET'
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
+
+  return data;
+}
+
+export const deleteAllMessages = async (payload: IPayload) => {
+  let data: object;
+
+  try {
+    ({ data } = await axios({
+      url: 'http://localhost:8090/internal/v2/messages/retry',
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json'
+      },
+      data: JSON.stringify(payload)
+    }))
+  } catch(err) {
+    console.log(err);
+    throw err;
+  }
+
+  return data;
+}

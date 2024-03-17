@@ -38,7 +38,7 @@ const setTopics = (payload: unknown) => ({
   payload
 });
 
-//TODO: this is supposed to be Array<string> but had to keep it as unknown for now while I debug
+// TODO: this is supposed to be Array<string> but had to keep it as unknown for now while I debug
 const setKeys = (keys: unknown) => ({
   type: messageTypes.GET_KEYS,
   payload: keys
@@ -69,6 +69,7 @@ export const getAllTopics = () => async(dispatch: Dispatch) => {
   try {
     const response = await api.getTopics();
     dispatch(setTopics(response));
+    localStorage.setItem('topics', JSON.stringify(response[0]));
   } catch(err: unknown) {
     console.log(err);
     dispatch(setTopicError(err.message));

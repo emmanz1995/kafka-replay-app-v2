@@ -11,16 +11,21 @@ function App() {
   const [chosenTopic, setChosenTopic] = useState<unknown>(null);
   const dispatch = useDispatch();
 
+  const topic = JSON.parse(localStorage.getItem('topics') as string)
+
   useEffect(() => {
     if(chosenTopic) handleSearchMessages();
     dispatch(getAllTopics());
-    dispatch(getKeys(topics));
+    dispatch(getKeys(topic));
 
   }, [dispatch, chosenTopic]);
+
+  console.log('...t:', topic)
 
   const handleSearchMessages = () => {
     const payload: { topic: string, keys: string[] } = {
       topic: 'some-topic_ms-kafka-failure_RETRY',
+      // topic: topics[0],
       keys
     }
     dispatch(getMessages(payload));
