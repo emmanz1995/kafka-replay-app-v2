@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.3",
     "@types/react-query": "^1.2.9",
     "axios": "^1.5.1",
     "framer-motion": "^10.16.4",

@@ -1,19 +1,16 @@
-import thunk from 'redux-thunk';
-import { applyMiddleware, legacy_createStore as createStore } from 'redux';
-import { composeWithDevTools } from '@redux-devtools/extension';
-import rootReducer from '../reducer';
+import { configureStore } from '@reduxjs/toolkit';
+import messageSlice from '../../feature/message/messageSlice';
+import keysSlice from '../../feature/keys/keysSlice';
+import topicsSlice from '../../feature/topics/topicsSlice';
 
-const initialState = {};
 
-const middleware = [thunk];
-
-const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(applyMiddleware(...middleware))
-);
-
-console.log('...store:', store)
-console.log('...store.getState:', store.getState())
+export const store = configureStore({
+  reducer: {
+    message: messageSlice,
+    keys: keysSlice,
+    topics: topicsSlice
+  },
+  devTools: true
+})
 
 export default store;
